@@ -52,8 +52,8 @@ The AI Interview Agent automates the traditional initial screening and technical
 ### 2. Setup
 Clone the repository and install dependencies:
 ```bash
-git clone https://github.com/karthikeyachalla/ai-interview-agents.git
-cd ai-interview-agents
+git clone https://github.com/karthikeyachalla/autonomous-ai-interviewer.git
+cd autonomous-ai-interviewer
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
