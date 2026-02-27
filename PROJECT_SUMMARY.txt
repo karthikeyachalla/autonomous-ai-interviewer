@@ -1,0 +1,68 @@
+Multi-Round Interview Agent — Project Summary
+
+Overview
+- Purpose: Multi-stage automated interviewer supporting screening (Round 1), technical (Round 2), and scenario/problem-solving (Round 3).
+- Stack: FastAPI backend, SQLite (SQLAlchemy) persistence, Streamlit demo UI for Round 1. Optional Grok LLM for evaluation and extraction.
+
+Architecture
+- backend/
+  - main.py: FastAPI app, router wiring, CORS middleware.
+  - core/config.py: Config via Pydantic settings (.env); keys: GROK_API_KEY, DATABASE_URL, ATS_THRESHOLD, ATS_MIN_MATCHES, ATS_MIN_SCORE_FOR_PASS, HELP_PENALTY_PER_HINT.
+  - database/db.py, models.py: SQLAlchemy engine, session helper, models: Candidate, Application, RoundResult.
+  - round1/: resume parsing, ATS evaluator (TF-IDF + optional Grok/LLM), service to persist Application + RoundResult, routes: /round1/apply, /round1/chat.
+  - round2/: aptitude engine, DSA engine, code runner (Python), scoring and websocket interviewer (real-time hints and penalization).
+  - round3/: scenario generator, evaluator, routes for scenarios and submissions.
+  - utils/: text helpers (normalization, keywords).
+
+Key Behaviors
+- Resume extraction: prefer Grok (base64) for small PDFs, fallback to PyMuPDF locally.
+- ATS scoring: TF-IDF semantic scoring (unigrams+bigrams, stopwords removed). Optional LLM/Grok prompt yields calibrated JSON (score, matches, missing, reasons, suggestions).
+- Pass/fail: `decide_pass()` uses ATS_THRESHOLD or blended matched-count+min-score; configurable via .env.
+- Round2: aptitude + DSA + technical, counts hints to apply penalties to final score.
+- Round3: scenario prompts generated from JD and evaluated with a simple rubric (extendable to LLM-based evaluation).
+
+Endpoints (examples)
+- GET /health
+- POST /round1/apply (form: job_role, jd_text; file: resume) -> {application_id, score, passed, details, resume_preview}
+- POST /round1/chat (form: application_id, message) -> {reply}
+- GET /round2/aptitude/{role}
+- POST /round2/aptitude/submit
+- GET /round2/dsa/{role}
+- POST /round2/final-score
+- WebSocket /ws/{application_id} for real-time interviewer
+- GET /round3/scenarios/{application_id}
+- POST /round3/submit
+
+Run & Dev Setup
+1. Create a virtualenv and activate it.
+2. Install dependencies (example):
+   pip install fastapi uvicorn sqlalchemy pydantic-settings python-multipart pymupdf requests streamlit scikit-learn
+   # optional: sentence-transformers for embeddings, openai if used
+3. Create .env at repo root with keys:
+   GROK_API_KEY=your_key
+   DATABASE_URL=sqlite:///./backend/data.db
+   ATS_THRESHOLD=60
+   ATS_MIN_MATCHES=3
+   ATS_MIN_SCORE_FOR_PASS=50
+4. Start backend:
+   python3 -m uvicorn backend.main:app --reload
+5. Start Streamlit UI for Round1 demo:
+   streamlit run streamlit_round1.py
+
+Testing
+- Use Streamlit UI to upload resumes and chat.
+- Or use curl / requests to call the endpoints listed above.
+- DB file: backend/data.db (inspect using sqlite3).
+
+Development Notes & Next Steps
+- Improve semantic matching: add sentence-transformers embeddings and blend with TF-IDF.
+- Add synonym / skill-mapping to reduce false negatives.
+- Implement authenticated APIs and tighten CORS for production.
+- Add file-upload storage (S3), background processing for heavy LLM calls, and rate-limiting.
+- Add tests: unit tests for evaluators, integration tests for endpoints.
+
+Contact
+- Repo: local workspace /home/rohithkaki/Microsoft_Agent_Hackathon
+- Main entry: backend/main.py
+
+Generated: project summary file for quick reference.
