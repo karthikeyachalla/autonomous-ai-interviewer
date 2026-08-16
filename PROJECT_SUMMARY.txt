@@ -62,7 +62,7 @@ Development Notes & Next Steps
 - Add tests: unit tests for evaluators, integration tests for endpoints.
 
 Contact
-- Repo: local workspace /home/rohithkaki/Microsoft_Agent_Hackathon
+- Repo: autonomous-ai-interviewer
 - Main entry: backend/main.py
 
 Generated: project summary file for quick reference.

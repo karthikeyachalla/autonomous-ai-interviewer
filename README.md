@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
 
-> **Origin:** This project was developed and performed during an exclusive code-a-thon at **Microsoft Office, Hyderabad**, organized by **Forged Alumni**. 
+> **Origin:** This project was developed during a hackathon at **Microsoft Office, Hyderabad**, organized by **Forged Alumni**. 
 
 A multi-round, AI-powered autonomous interviewing platform that simulates a comprehensive real-world technical hiring process. Built using FastAPI, Google Gemini's reasoning engine, and a glass-morphism web interface.
 
